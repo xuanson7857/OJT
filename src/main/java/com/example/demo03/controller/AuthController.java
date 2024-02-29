@@ -13,8 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class AuthController {
-    @Autowired
-    HttpSession httpSession;
+
     @Autowired
     UserService userService;
     @GetMapping("/login")
@@ -30,11 +29,5 @@ public class AuthController {
         }
         return "redirect:/login";
     }
-    @GetMapping("/")
-    public String home(){
-        if (httpSession.getAttribute("userLogin") != null){
-            return "home";
-        }
-        return "redirect:/login";
-    }
+
 }
