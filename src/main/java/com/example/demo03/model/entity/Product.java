@@ -3,6 +3,7 @@ package com.example.demo03.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 
 @Entity
@@ -19,7 +20,7 @@ public class Product {
     private Long productId;
     private String productName;
     private Double price;
-    private Timestamp createDate;
+    private Date createDate;
     private Integer quanity;
 
 }

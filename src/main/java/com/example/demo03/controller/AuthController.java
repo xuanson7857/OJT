@@ -30,11 +30,5 @@ public class AuthController {
         }
         return "redirect:/login";
     }
-    @GetMapping("/")
-    public String home(){
-        if (httpSession.getAttribute("userLogin") != null){
-            return "home";
-        }
-        return "redirect:/login";
-    }
+
 }
