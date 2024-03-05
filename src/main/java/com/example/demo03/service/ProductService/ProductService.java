@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -28,9 +29,10 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
     String line = "";
-    public void saveCustomerData () {
+    public void saveCustomerData (String fileName) {
         try {
-            Path pathToFile = Paths.get("/Users/son/Desktop/OJT/Demo03/src/main/resources/Book2.csv");
+            String pathFile = "/Users/son/Desktop/OJT/Demo03/src/main/resources/uploads/" + fileName;
+            Path pathToFile = Paths.get(pathFile);
             BufferedReader br = Files.newBufferedReader(pathToFile, StandardCharsets.UTF_8);
             while ((line = br.readLine()) != null) {
                 String [] data = line.split(";");
@@ -41,9 +43,30 @@ public class ProductService {
                 product.setCreateDate(Date.valueOf(date));
                 product.setPrice(Double.valueOf(data[2]));
                 product.setQuanity(Integer.valueOf(data[3]));
-                productRepository.save(product);
 
+                Product pro = productRepository.findProductByProductName(product.getProductName());
+
+                switch (data[4]) {
+                    case "create":
+                        if (pro == null) {
+                            productRepository.save(product);
+                        }
+                        break;
+                    case "delete":
+                        if (pro != null) {
+                            productRepository.delete(pro);
+                        }
+                        break;
+                    case "update":
+                        if (pro != null) {
+                            product.setProductId(pro.getProductId());
+                            productRepository.save(product);
+                        }
+                        break;
+                }
             }
+            File file = new File(pathFile);
+            file.delete();
         } catch (IOException e) {
             e.printStackTrace();
         }catch (Exception e){
@@ -75,6 +98,7 @@ public class ProductService {
             dataRow.createCell(3).setCellValue(product.getPrice());
             dataRow.createCell(4).setCellValue(product.getQuanity());
 
+
             dataRowIndex++;
         }
         ServletOutputStream ops = response.getOutputStream();
@@ -83,7 +107,9 @@ public class ProductService {
         ops.close();
     }
 
-
+    public List<Product> findAll () {
+        return productRepository.findAll();
+    }
 
 
 }
